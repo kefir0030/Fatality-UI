@@ -360,11 +360,12 @@ local function CreateCheckbox(parent, text, defaultValue, bindKey)
                 table.insert(BindRegistry[keyName], {
                     checkbox = Checkbox,
                     toggle = function()
-                        isChecked = not isChecked
-                        CheckMark.Visible = isChecked
-                        ElementStates[stateKey] = isChecked
+                        local currentState = ElementStates[stateKey] or false
+                        local newState = not currentState
+                        ElementStates[stateKey] = newState
+                        CheckMark.Visible = newState
                         TweenService:Create(Checkbox, TweenInfo.new(0.2, Enum.EasingStyle.Quad), {
-                            BackgroundColor3 = isChecked and Config.Theme.Primary or Color3.fromRGB(40, 35, 60)
+                            BackgroundColor3 = newState and Config.Theme.Primary or Color3.fromRGB(40, 35, 60)
                         }):Play()
                     end
                 })
