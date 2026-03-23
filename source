@@ -28,6 +28,7 @@ local AllSubTabs = {}
 local AllContentFrames = {}
 local BindRegistry = {}
 local isColorPickerActive = false
+local ElementStates = {}
 UserInputService.InputBegan:Connect(function(input, gameProcessed)
     if gameProcessed then return end
     if input.UserInputType == Enum.UserInputType.Keyboard then
@@ -282,6 +283,8 @@ local function CreateColumnContainer(parent)
     return ColumnsFrame, columns
 end
 local function CreateCheckbox(parent, text, defaultValue, bindKey)
+    local stateKey = CurrentTab .. "_" .. CurrentSubTab .. "_Checkbox_" .. text
+    
     local CheckboxFrame = Instance.new("Frame")
     CheckboxFrame.Name = "Checkbox_" .. text
     CheckboxFrame.Size = UDim2.new(1, -28, 0, 25)
@@ -351,6 +354,7 @@ local function CreateCheckbox(parent, text, defaultValue, bindKey)
                     toggle = function()
                         isChecked = not isChecked
                         CheckMark.Visible = isChecked
+                        ElementStates[stateKey] = isChecked
                         TweenService:Create(Checkbox, TweenInfo.new(0.2, Enum.EasingStyle.Quad), {
                             BackgroundColor3 = isChecked and Config.Theme.Primary or Color3.fromRGB(40, 35, 60)
                         }):Play()
@@ -388,10 +392,20 @@ local function CreateCheckbox(parent, text, defaultValue, bindKey)
             end
         end)
     end
-    local isChecked = defaultValue or false
+    
+    local isChecked = ElementStates[stateKey]
+    if isChecked == nil then
+        isChecked = defaultValue or false
+        ElementStates[stateKey] = isChecked
+    end
+    
+    CheckMark.Visible = isChecked
+    Checkbox.BackgroundColor3 = isChecked and Config.Theme.Primary or Color3.fromRGB(40, 35, 60)
+    
     Checkbox.MouseButton1Click:Connect(function()
         isChecked = not isChecked
         CheckMark.Visible = isChecked
+        ElementStates[stateKey] = isChecked
         local tween = TweenService:Create(Checkbox, TweenInfo.new(0.2, Enum.EasingStyle.Quad), {
             BackgroundColor3 = isChecked and Config.Theme.Primary or Color3.fromRGB(40, 35, 60)
         })
@@ -412,6 +426,8 @@ local function CreateSectionHeader(parent, text)
     return Header
 end
 local function CreateSlider(parent, text, min, max, default)
+    local stateKey = CurrentTab .. "_" .. CurrentSubTab .. "_Slider_" .. text
+    
     local SliderFrame = Instance.new("Frame")
     SliderFrame.Name = "Slider_" .. text
     SliderFrame.Size = UDim2.new(1, -28, 0, 28)
@@ -451,23 +467,31 @@ local function CreateSlider(parent, text, min, max, default)
     SliderBack.BorderSizePixel = 1
     SliderBack.BorderColor3 = Color3.fromRGB(60, 50, 90)
     SliderBack.Parent = SliderFrame
+    
+    local currentValue = ElementStates[stateKey]
+    if currentValue == nil then
+        currentValue = default
+        ElementStates[stateKey] = currentValue
+    end
+    
     local SliderFill = Instance.new("Frame")
-    SliderFill.Size = UDim2.new((default - min) / (max - min), 0, 1, 0)
+    SliderFill.Size = UDim2.new((currentValue - min) / (max - min), 0, 1, 0)
     SliderFill.BackgroundColor3 = Config.Theme.Primary
     SliderFill.BorderSizePixel = 0
     SliderFill.Parent = SliderBack
     local ValueLabel = Instance.new("TextLabel")
     ValueLabel.Size = UDim2.new(1, 0, 1, 0)
     ValueLabel.BackgroundTransparency = 1
-    ValueLabel.Text = tostring(default)
+    ValueLabel.Text = tostring(currentValue)
     ValueLabel.Font = Enum.Font.GothamBold
     ValueLabel.TextSize = 11
     ValueLabel.TextColor3 = Color3.fromRGB(255, 255, 255)    ValueLabel.ZIndex = 2
     ValueLabel.Parent = SliderBack
-    local currentValue = default
+    
     local function UpdateSlider(value)
         currentValue = math.clamp(math.floor(value), min, max)
         ValueLabel.Text = tostring(currentValue)
+        ElementStates[stateKey] = currentValue
         local percent = (currentValue - min) / (max - min)
         TweenService:Create(SliderFill, TweenInfo.new(0.1), {Size = UDim2.new(percent, 0, 1, 0)}):Play()
     end
@@ -501,6 +525,8 @@ local function CreateSlider(parent, text, min, max, default)
     return SliderFrame
 end
 local function CreateDropdown(parent, text, options)
+    local stateKey = CurrentTab .. "_" .. CurrentSubTab .. "_Dropdown_" .. text
+    
     local DropdownFrame = Instance.new("Frame")
     DropdownFrame.Name = "Dropdown_" .. text
     DropdownFrame.Size = UDim2.new(1, -28, 0, 43)
@@ -530,7 +556,7 @@ local function CreateDropdown(parent, text, options)
     DropLabel.Size = UDim2.new(1, -30, 1, 0)
     DropLabel.Position = UDim2.new(0, 8, 0, 0)
     DropLabel.BackgroundTransparency = 1
-    DropLabel.Text = "None"
+    DropLabel.Text = ElementStates[stateKey] or "None"
     DropLabel.Font = Enum.Font.GothamBold
     DropLabel.TextSize = 12
     DropLabel.TextColor3 = Config.Theme.TextColor
@@ -604,8 +630,10 @@ local function CreateDropdown(parent, text, options)
         OptionButton.MouseButton1Click:Connect(function()
             if DropLabel.Text == option then
                 DropLabel.Text = "None"
+                ElementStates[stateKey] = "None"
             else
                 DropLabel.Text = option
+                ElementStates[stateKey] = option
             end
             OptionsFrame.Visible = false
         end)
@@ -629,6 +657,8 @@ local function CreateDropdown(parent, text, options)
     return DropdownFrame
 end
 local function CreateMultiDropdown(parent, text, options)
+    local stateKey = CurrentTab .. "_" .. CurrentSubTab .. "_MultiDropdown_" .. text
+    
     local DropdownFrame = Instance.new("Frame")
     DropdownFrame.Name = "MultiDropdown_" .. text
     DropdownFrame.Size = UDim2.new(1, -28, 0, 43)
@@ -684,14 +714,20 @@ local function CreateMultiDropdown(parent, text, options)
     ArrowInner.BorderSizePixel = 0
     ArrowInner.ZIndex = 4
     ArrowInner.Parent = Arrow
-    local selectedOptions = {}
+    
+    local selectedOptions = ElementStates[stateKey] or {}
+    
     local function UpdateLabel()
         if #selectedOptions == 0 then
             DropLabel.Text = "None"
         else
             DropLabel.Text = table.concat(selectedOptions, ", ")
         end
+        ElementStates[stateKey] = selectedOptions
     end
+    
+    UpdateLabel()
+    
     local OptionsFrame = Instance.new("Frame")
     OptionsFrame.Name = "Options"
     OptionsFrame.Size = UDim2.new(0, DropdownButton.AbsoluteSize.X, 0, math.min(#options * 30, 150))
@@ -719,7 +755,8 @@ local function CreateMultiDropdown(parent, text, options)
         OptionButton.Text = option
         OptionButton.Font = Enum.Font.GothamBold
         OptionButton.TextSize = 13
-        OptionButton.TextColor3 = Config.Theme.TextColor
+        local isSelected = table.find(selectedOptions, option) ~= nil
+        OptionButton.TextColor3 = isSelected and Config.Theme.Primary or Config.Theme.TextColor
         OptionButton.ZIndex = 102
         OptionButton.Parent = OptionsScroll
         if i < #options then
@@ -768,6 +805,8 @@ local function CreateMultiDropdown(parent, text, options)
     return DropdownFrame
 end
 local function CreateColorPicker(parent, text, defaultColor)
+    local stateKey = CurrentTab .. "_" .. CurrentSubTab .. "_ColorPicker_" .. text
+    
     local ColorFrame = Instance.new("Frame")
     ColorFrame.Name = "ColorPicker_" .. text
     ColorFrame.Size = UDim2.new(1, -28, 0, 25)
@@ -781,10 +820,13 @@ local function CreateColorPicker(parent, text, defaultColor)
     Label.TextSize = 12
     Label.TextColor3 = Config.Theme.TextColor
     Label.TextXAlignment = Enum.TextXAlignment.Left    Label.Parent = ColorFrame
+    
+    local savedColor = ElementStates[stateKey] or defaultColor or Config.Theme.Primary
+    
     local ColorButton = Instance.new("TextButton")
     ColorButton.Size = UDim2.new(0, 35, 0, 18)
     ColorButton.Position = UDim2.new(1, -35, 0.5, -9)
-    ColorButton.BackgroundColor3 = defaultColor or Config.Theme.Primary
+    ColorButton.BackgroundColor3 = savedColor
     ColorButton.BorderSizePixel = 1
     ColorButton.BorderColor3 = Color3.fromRGB(60, 50, 90)
     ColorButton.Text = ""
@@ -887,6 +929,7 @@ local function CreateColorPicker(parent, text, defaultColor)
             local val = 1 - y
             local color = Color3.fromHSV(hue, sat, val)
             ColorButton.BackgroundColor3 = color
+            ElementStates[stateKey] = color
         end
     end)
     BlackGradient.InputEnded:Connect(function(input)
@@ -908,6 +951,7 @@ local function CreateColorPicker(parent, text, defaultColor)
             local val = 1 - y
             local color = Color3.fromHSV(hue, sat, val)
             ColorButton.BackgroundColor3 = color
+            ElementStates[stateKey] = color
         end
     end)
     HueBar.InputBegan:Connect(function(input)
