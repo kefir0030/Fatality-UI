@@ -1,6 +1,6 @@
 -- fast example
 
-local FatalityUI = loadstring(game:HttpGet("https://raw.githubusercontent.com/kefir0030/Fatality-UI/refs/heads/main/source"))()
+local FatalityUI = loadstring(game:HttpGet("https://raw.githubusercontent.com/kefir0030/Fatality-UI/refs/heads/main/source.lua"))()
 
 local Config = FatalityUI.Config
 local UI = FatalityUI:New()
