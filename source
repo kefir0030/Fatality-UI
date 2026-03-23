@@ -23,14 +23,20 @@ FatalityUI.Config = {
     }
 }
 local Config = FatalityUI.Config
-local CurrentTab = "RAGE"
-local CurrentSubTab = "AIMBOT"
+local CurrentTab = nil
+local CurrentSubTab = nil
 local AllTabs = {}
 local AllSubTabs = {}
-local AllContentFrames = {}
 local BindRegistry = {}
 local isColorPickerActive = false
 local ElementStates = {}
+local ScreenGui = nil
+local MainFrame = nil
+local TabContainer = nil
+local SubTabContainer = nil
+local ColumnsFrame = nil
+local Columns = {}
+
 UserInputService.InputBegan:Connect(function(input, gameProcessed)
     if gameProcessed then return end
     if input.UserInputType == Enum.UserInputType.Keyboard then
@@ -1481,7 +1487,6 @@ function FatalityUI:New()
     local ContentFrame, subTabContainer = CreateContentContainer(MainFrame)
     SubTabContainer = subTabContainer
     ColumnsFrame, Columns = CreateColumnContainer(ContentFrame)
-    
     if syn and syn.protect_gui then
         syn.protect_gui(ScreenGui)
     end
