@@ -2186,6 +2186,4 @@ function FatalityUI:Init()
     end)
     return ScreenGui
 end
-FatalityUI:Init()
-print("broskei")
 return FatalityUI
