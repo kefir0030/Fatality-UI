@@ -9,7 +9,8 @@ local TweenService = game:GetService("TweenService")
 local UserInputService = game:GetService("UserInputService")
 local CoreGui = game:GetService("CoreGui")
 local TextService = game:GetService("TextService")
-local Config = {
+
+FatalityUI.Config = {
     UIName = "FatalityUI",
     ToggleKey = Enum.KeyCode.Delete,
     Theme = {
@@ -21,6 +22,7 @@ local Config = {
         AccentColor = Color3.fromRGB(255, 80, 110)
     }
 }
+local Config = FatalityUI.Config
 local CurrentTab = "RAGE"
 local CurrentSubTab = "AIMBOT"
 local AllTabs = {}
