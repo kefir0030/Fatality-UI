@@ -238,7 +238,7 @@ local function CreateColumnContainer(parent)
         ScrollUpArrow.BackgroundColor3 = Color3.fromRGB(35, 30, 55)
         ScrollUpArrow.BackgroundTransparency = 0.5
         ScrollUpArrow.BorderSizePixel = 0
-        ScrollUpArrow.Text = "▲"
+        ScrollUpArrow.Text = "в–І"
         ScrollUpArrow.Font = Enum.Font.Cartoon
         ScrollUpArrow.TextSize = 10
         ScrollUpArrow.TextColor3 = Config.Theme.Primary        ScrollUpArrow.ZIndex = 10
@@ -251,7 +251,7 @@ local function CreateColumnContainer(parent)
         ScrollDownArrow.BackgroundColor3 = Color3.fromRGB(35, 30, 55)
         ScrollDownArrow.BackgroundTransparency = 0.5
         ScrollDownArrow.BorderSizePixel = 0
-        ScrollDownArrow.Text = "▼"
+        ScrollDownArrow.Text = "в–ј"
         ScrollDownArrow.Font = Enum.Font.Cartoon
         ScrollDownArrow.TextSize = 10
         ScrollDownArrow.TextColor3 = Config.Theme.Primary        ScrollDownArrow.ZIndex = 10
@@ -1352,7 +1352,7 @@ local function CreateNotification(title, message, duration)
 	Icon.Size = UDim2.new(0, 30, 0, 30)
 	Icon.Position = UDim2.new(0, 10, 0, 8)
 	Icon.BackgroundTransparency = 1
-	Icon.Text = "✓"
+	Icon.Text = "вњ“"
 	Icon.Font = Enum.Font.GothamBold
 	Icon.TextSize = 20
 	Icon.TextColor3 = Config.Theme.Primary
@@ -1472,762 +1472,84 @@ local function CreateNotification(title, message, duration)
 		end)
 	end)
 end
-function FatalityUI:Init()
-    local ScreenGui, MainFrame = CreateMainUI()
-    local TopBar, TabContainer = CreateTopBar(MainFrame)
-    local ContentFrame, SubTabContainer = CreateContentContainer(MainFrame)
-    local ColumnsFrame, columns = CreateColumnContainer(ContentFrame)
-    local TabContents = {}
-    local function ClearColumns()
-        for _, column in ipairs(columns) do
-            column.Visible = true
-            for _, child in ipairs(column:GetChildren()) do
-                if not child:IsA("UIListLayout") and not child:IsA("UIPadding") and not child:IsA("UICorner") then
-                    child:Destroy()
-                end
-            end
-        end
-        for _, child in ipairs(ColumnsFrame:GetChildren()) do
-            if child:IsA("TextLabel") then
-                child:Destroy()
-            elseif child:IsA("ScrollingFrame") and child.Name ~= "Column1" and child.Name ~= "Column2" and child.Name ~= "Column3" then
-                child:Destroy()
-            end
-        end
-    end
-    local function CreateSectionLabels(labels)
-        for i, labelText in ipairs(labels) do
-            if labelText and labelText ~= "" then
-                local Label = Instance.new("TextLabel")
-                Label.Size = UDim2.new(0, 70, 0, 16)
-                Label.Position = UDim2.new(
-                    columns[i].Position.X.Scale, 
-                    columns[i].Position.X.Offset + 10, 
-                    columns[i].Position.Y.Scale, 
-                    columns[i].Position.Y.Offset - 8
-                )
-                Label.BackgroundTransparency = 1
-                Label.BorderSizePixel = 0
-                Label.Text = labelText
-                Label.Font = Enum.Font.GothamBold
-                Label.TextSize = 12
-                Label.TextColor3 = Color3.fromRGB(240, 240, 255)
-                Label.TextXAlignment = Enum.TextXAlignment.Center
-                Label.ZIndex = 5
-                Label.Parent = ColumnsFrame
-            end
-        end
-    end
-    local function LoadRageAimbotContent()
-        ClearColumns()
-        for _, col in ipairs(columns) do
-            col.Visible = true
-        end
-        CreateCheckbox(columns[1], "Aimbot", false, "NONE")
-        CreateCheckbox(columns[1], "Autofire", false)
-        CreateCheckbox(columns[1], "Resolver", false)
-        CreateCheckbox(columns[1], "Double tap", false, "NONE")
-        CreateCheckbox(columns[1], "Remove visual punch", false)
-        CreateCheckbox(columns[1], "Backtrack", false)
-        CreateCheckbox(columns[2], "Force baim", false, "NONE")
-        CreateCheckbox(columns[2], "Remove spread ( nospread only )", false)
-        CreateCheckbox(columns[2], "Fake walk", false, "NONE")
-        CreateCheckbox(columns[2], "Override resolver", false, "NONE")
-    end
-    local function LoadRageAntiAimContent()
-        ClearColumns()
-        for _, col in ipairs(columns) do
-            col.Visible = false
-        end
-        local col1Width = 0.32
-        local col2Width = 0.32
-        local movingHeight = 0.48
-        local airHeight = 0.48
-        local generalHeight = 0.60
-        local configHeight = 0.36
-        local gap = 0.02
-        local StandingCol = Instance.new("ScrollingFrame")
-        StandingCol.Name = "StandingColumn"
-        StandingCol.Size = UDim2.new(col1Width, 0, 0.98, 0)
-        StandingCol.Position = UDim2.new(0, 0, 0, 0)
-        StandingCol.BackgroundColor3 = Config.Theme.TabBackground
-        StandingCol.BorderSizePixel = 1
-        StandingCol.BorderColor3 = Color3.fromRGB(60, 50, 90)
-        StandingCol.ScrollBarThickness = 0
-        StandingCol.CanvasSize = UDim2.new(0, 0, 0, 0)
-        StandingCol.AutomaticCanvasSize = Enum.AutomaticSize.Y
-        StandingCol.Parent = ColumnsFrame
-        local StandingLayout = Instance.new("UIListLayout")
-        StandingLayout.Padding = UDim.new(0, 5)
-        StandingLayout.HorizontalAlignment = Enum.HorizontalAlignment.Center
-        StandingLayout.Parent = StandingCol
-        local StandingPadding = Instance.new("UIPadding")
-        StandingPadding.PaddingTop = UDim.new(0, 15)
-        StandingPadding.PaddingBottom = UDim.new(0, 15)
-        StandingPadding.PaddingLeft = UDim.new(0, 0.7)
-        StandingPadding.PaddingRight = UDim.new(0, 15)
-        StandingPadding.Parent = StandingCol
-        local MovingCol = Instance.new("ScrollingFrame")
-        MovingCol.Name = "MovingColumn"
-        MovingCol.Size = UDim2.new(col2Width, 0, movingHeight, 0)
-        MovingCol.Position = UDim2.new(0.34, 0, 0, 0)
-        MovingCol.BackgroundColor3 = Config.Theme.TabBackground
-        MovingCol.BorderSizePixel = 1
-        MovingCol.BorderColor3 = Color3.fromRGB(60, 50, 90)
-        MovingCol.ScrollBarThickness = 0
-        MovingCol.CanvasSize = UDim2.new(0, 0, 0, 0)
-        MovingCol.AutomaticCanvasSize = Enum.AutomaticSize.Y
-        MovingCol.Parent = ColumnsFrame
-        local MovingLayout = Instance.new("UIListLayout")
-        MovingLayout.Padding = UDim.new(0, 5)
-        MovingLayout.HorizontalAlignment = Enum.HorizontalAlignment.Center
-        MovingLayout.Parent = MovingCol
-        local MovingPadding = Instance.new("UIPadding")
-        MovingPadding.PaddingTop = UDim.new(0, 15)
-        MovingPadding.PaddingBottom = UDim.new(0, 15)
-        MovingPadding.PaddingLeft = UDim.new(0, 0.7)
-        MovingPadding.PaddingRight = UDim.new(0, 15)
-        MovingPadding.Parent = MovingCol
-        local AirCol = Instance.new("ScrollingFrame")
-        AirCol.Name = "AirColumn"
-        AirCol.Size = UDim2.new(col2Width, 0, airHeight, 0)
-        AirCol.Position = UDim2.new(0.34, 0, movingHeight + gap, 0)
-        AirCol.BackgroundColor3 = Config.Theme.TabBackground
-        AirCol.BorderSizePixel = 1
-        AirCol.BorderColor3 = Color3.fromRGB(60, 50, 90)
-        AirCol.ScrollBarThickness = 0
-        AirCol.CanvasSize = UDim2.new(0, 0, 0, 0)
-        AirCol.AutomaticCanvasSize = Enum.AutomaticSize.Y
-        AirCol.Parent = ColumnsFrame
-        local AirLayout = Instance.new("UIListLayout")
-        AirLayout.Padding = UDim.new(0, 5)
-        AirLayout.HorizontalAlignment = Enum.HorizontalAlignment.Center
-        AirLayout.Parent = AirCol
-        local AirPadding = Instance.new("UIPadding")
-        AirPadding.PaddingTop = UDim.new(0, 15)
-        AirPadding.PaddingBottom = UDim.new(0, 15)
-        AirPadding.PaddingLeft = UDim.new(0, 0.7)
-        AirPadding.PaddingRight = UDim.new(0, 15)
-        AirPadding.Parent = AirCol
-        local GeneralCol = Instance.new("ScrollingFrame")
-        GeneralCol.Name = "GeneralColumn"
-        GeneralCol.Size = UDim2.new(col2Width, 0, generalHeight, 0)
-        GeneralCol.Position = UDim2.new(0.68, 0, 0, 0)
-        GeneralCol.BackgroundColor3 = Config.Theme.TabBackground
-        GeneralCol.BorderSizePixel = 1
-        GeneralCol.BorderColor3 = Color3.fromRGB(60, 50, 90)
-        GeneralCol.ScrollBarThickness = 0
-        GeneralCol.CanvasSize = UDim2.new(0, 0, 0, 0)
-        GeneralCol.AutomaticCanvasSize = Enum.AutomaticSize.Y
-        GeneralCol.Parent = ColumnsFrame
-        local GeneralLayout = Instance.new("UIListLayout")
-        GeneralLayout.Padding = UDim.new(0, 5)
-        GeneralLayout.HorizontalAlignment = Enum.HorizontalAlignment.Center
-        GeneralLayout.Parent = GeneralCol
-        local GeneralPadding = Instance.new("UIPadding")
-        GeneralPadding.PaddingTop = UDim.new(0, 15)
-        GeneralPadding.PaddingBottom = UDim.new(0, 15)
-        GeneralPadding.PaddingLeft = UDim.new(0, 0.7)
-        GeneralPadding.PaddingRight = UDim.new(0, 15)
-        GeneralPadding.Parent = GeneralCol
-        local ConfigCol = Instance.new("ScrollingFrame")
-        ConfigCol.Name = "ConfigColumn"
-        ConfigCol.Size = UDim2.new(col2Width, 0, configHeight, 0)
-        ConfigCol.Position = UDim2.new(0.68, 0, generalHeight + gap, 0)
-        ConfigCol.BackgroundColor3 = Config.Theme.TabBackground
-        ConfigCol.BorderSizePixel = 1
-        ConfigCol.BorderColor3 = Color3.fromRGB(60, 50, 90)
-        ConfigCol.ScrollBarThickness = 0
-        ConfigCol.CanvasSize = UDim2.new(0, 0, 0, 0)
-        ConfigCol.AutomaticCanvasSize = Enum.AutomaticSize.Y
-        ConfigCol.Parent = ColumnsFrame
-        local ConfigLayout = Instance.new("UIListLayout")
-        ConfigLayout.Padding = UDim.new(0, 5)
-        ConfigLayout.HorizontalAlignment = Enum.HorizontalAlignment.Center
-        ConfigLayout.Parent = ConfigCol
-        local ConfigPadding = Instance.new("UIPadding")
-        ConfigPadding.PaddingTop = UDim.new(0, 15)
-        ConfigPadding.PaddingBottom = UDim.new(0, 15)
-        ConfigPadding.PaddingLeft = UDim.new(0, 0.7)
-        ConfigPadding.PaddingRight = UDim.new(0, 15)
-        ConfigPadding.Parent = ConfigCol
-        CreateCheckbox(StandingCol, "Pitch", false)
-        CreateCheckbox(StandingCol, "Yaw", false)
-        CreateCheckbox(StandingCol, "Jitter", false)
-        CreateCheckbox(StandingCol, "Desync", false)
-        CreateCheckbox(MovingCol, "Fake lag", false)
-        CreateCheckbox(MovingCol, "Break LBY", false)
-        CreateCheckbox(MovingCol, "Freestanding", false)
-        CreateCheckbox(AirCol, "Air pitch", false)
-        CreateCheckbox(AirCol, "Air yaw", false)
-        CreateCheckbox(AirCol, "Air jitter", false)
-        CreateCheckbox(GeneralCol, "Anti-aim enabled", false)
-        CreateCheckbox(GeneralCol, "Fakelag always on", false)
-        local ConfigLabel = Instance.new("TextLabel")
-        ConfigLabel.Size = UDim2.new(1, -30, 0, 20)
-        ConfigLabel.BackgroundTransparency = 1
-        ConfigLabel.Text = "Slot"
-        ConfigLabel.Font = Enum.Font.GothamBold
-        ConfigLabel.TextSize = 14
-        ConfigLabel.TextColor3 = Config.Theme.TextColor
-        ConfigLabel.TextXAlignment = Enum.TextXAlignment.Left
-        ConfigLabel.Parent = ConfigCol
-        local SlotInputFrame = Instance.new("Frame")
-        SlotInputFrame.Size = UDim2.new(1, -28, 0, 26)
-        SlotInputFrame.BackgroundTransparency = 1
-        SlotInputFrame.Parent = ConfigCol
-        local SlotInput = Instance.new("TextBox")
-        SlotInput.Size = UDim2.new(0.75, 0, 1, 0)
-        SlotInput.Position = UDim2.new(0, 0, 0, 0)
-        SlotInput.AnchorPoint = Vector2.new(0, 0)
-        SlotInput.BackgroundColor3 = Color3.fromRGB(40, 35, 60)
-        SlotInput.BorderSizePixel = 1
-        SlotInput.BorderColor3 = Color3.fromRGB(60, 50, 90)
-        SlotInput.Text = "Slot 1"
-        SlotInput.Font = Enum.Font.GothamBold
-        SlotInput.TextSize = 13
-        SlotInput.TextColor3 = Color3.fromRGB(255, 255, 255)
-        SlotInput.PlaceholderText = "Enter slot name..."
-        SlotInput.Parent = SlotInputFrame
-        local LoadButtonFrame = Instance.new("Frame")
-        LoadButtonFrame.Size = UDim2.new(1, -28, 0, 24)
-        LoadButtonFrame.BackgroundTransparency = 1
-        LoadButtonFrame.Parent = ConfigCol
-        local LoadButton = Instance.new("TextButton")
-        LoadButton.Size = UDim2.new(0.75, 0, 1, 0)
-        LoadButton.Position = UDim2.new(0, 0, 0, 0)
-        LoadButton.AnchorPoint = Vector2.new(0, 0)
-        LoadButton.BackgroundColor3 = Config.Theme.Primary
-        LoadButton.BorderSizePixel = 1
-        LoadButton.BorderColor3 = Color3.fromRGB(200, 40, 120)
-        LoadButton.Text = "Load config"
-        LoadButton.Font = Enum.Font.GothamBold
-        LoadButton.TextSize = 13
-        LoadButton.TextColor3 = Color3.fromRGB(255, 255, 255)
-        LoadButton.Parent = LoadButtonFrame
-        LoadButton.MouseEnter:Connect(function()
-            TweenService:Create(LoadButton, TweenInfo.new(0.2), {BackgroundColor3 = Color3.fromRGB(255, 50, 167)}):Play()
-        end)
-        LoadButton.MouseLeave:Connect(function()
-            TweenService:Create(LoadButton, TweenInfo.new(0.2), {BackgroundColor3 = Config.Theme.Primary}):Play()
-        end)
-        local SaveButtonFrame = Instance.new("Frame")
-        SaveButtonFrame.Size = UDim2.new(1, -28, 0, 24)
-        SaveButtonFrame.BackgroundTransparency = 1
-        SaveButtonFrame.Parent = ConfigCol
-        local SaveButton = Instance.new("TextButton")
-        SaveButton.Size = UDim2.new(0.75, 0, 1, 0)
-        SaveButton.Position = UDim2.new(0, 0, 0, 0)
-        SaveButton.AnchorPoint = Vector2.new(0, 0)
-        SaveButton.BackgroundColor3 = Config.Theme.Primary
-        SaveButton.BorderSizePixel = 1
-        SaveButton.BorderColor3 = Color3.fromRGB(200, 40, 120)
-        SaveButton.Text = "Save config"
-        SaveButton.Font = Enum.Font.GothamBold
-        SaveButton.TextSize = 13
-        SaveButton.TextColor3 = Color3.fromRGB(255, 255, 255)
-        SaveButton.Parent = SaveButtonFrame
-        SaveButton.MouseEnter:Connect(function()
-            TweenService:Create(SaveButton, TweenInfo.new(0.2), {BackgroundColor3 = Color3.fromRGB(255, 50, 167)}):Play()
-        end)
-        SaveButton.MouseLeave:Connect(function()
-            TweenService:Create(SaveButton, TweenInfo.new(0.2), {BackgroundColor3 = Config.Theme.Primary}):Play()
-        end)
-        local StandingLabel = Instance.new("TextLabel")
-        StandingLabel.Size = UDim2.new(0, 70, 0, 16)
-        StandingLabel.Position = UDim2.new(StandingCol.Position.X.Scale, StandingCol.Position.X.Offset + 10, 0, -8)
-        StandingLabel.BackgroundTransparency = 1
-        StandingLabel.Text = "Standing"
-        StandingLabel.Font = Enum.Font.GothamBold
-        StandingLabel.TextSize = 12
-        StandingLabel.TextColor3 = Color3.fromRGB(240, 240, 255)
-        StandingLabel.TextXAlignment = Enum.TextXAlignment.Center
-        StandingLabel.ZIndex = 5
-        StandingLabel.Parent = ColumnsFrame
-        local MovingLabel = Instance.new("TextLabel")
-        MovingLabel.Size = UDim2.new(0, 60, 0, 16)
-        MovingLabel.Position = UDim2.new(MovingCol.Position.X.Scale, MovingCol.Position.X.Offset + 10, 0, -8)
-        MovingLabel.BackgroundTransparency = 1
-        MovingLabel.Text = "Moving"
-        MovingLabel.Font = Enum.Font.GothamBold
-        MovingLabel.TextSize = 12
-        MovingLabel.TextColor3 = Color3.fromRGB(240, 240, 255)
-        MovingLabel.TextXAlignment = Enum.TextXAlignment.Center
-        MovingLabel.ZIndex = 5
-        MovingLabel.Parent = ColumnsFrame
-        local AirLabel = Instance.new("TextLabel")
-        AirLabel.Size = UDim2.new(0, 40, 0, 16)
-        AirLabel.Position = UDim2.new(AirCol.Position.X.Scale, AirCol.Position.X.Offset + 10, AirCol.Position.Y.Scale, AirCol.Position.Y.Offset - 8)
-        AirLabel.BackgroundTransparency = 1
-        AirLabel.Text = "Air"
-        AirLabel.Font = Enum.Font.GothamBold
-        AirLabel.TextSize = 12
-        AirLabel.TextColor3 = Color3.fromRGB(240, 240, 255)
-        AirLabel.TextXAlignment = Enum.TextXAlignment.Center
-        AirLabel.ZIndex = 5
-        AirLabel.Parent = ColumnsFrame
-        local GeneralLabel = Instance.new("TextLabel")
-        GeneralLabel.Size = UDim2.new(0, 60, 0, 16)
-        GeneralLabel.Position = UDim2.new(GeneralCol.Position.X.Scale, GeneralCol.Position.X.Offset + 10, 0, -8)
-        GeneralLabel.BackgroundTransparency = 1
-        GeneralLabel.Text = "General"
-        GeneralLabel.Font = Enum.Font.GothamBold
-        GeneralLabel.TextSize = 12
-        GeneralLabel.TextColor3 = Color3.fromRGB(240, 240, 255)
-        GeneralLabel.TextXAlignment = Enum.TextXAlignment.Center
-        GeneralLabel.ZIndex = 5
-        GeneralLabel.Parent = ColumnsFrame
-        local ConfigLabelTop = Instance.new("TextLabel")
-        ConfigLabelTop.Size = UDim2.new(0, 60, 0, 16)
-        ConfigLabelTop.Position = UDim2.new(ConfigCol.Position.X.Scale, ConfigCol.Position.X.Offset + 10, ConfigCol.Position.Y.Scale, ConfigCol.Position.Y.Offset - 8)
-        ConfigLabelTop.BackgroundTransparency = 1
-        ConfigLabelTop.Text = "Config"
-        ConfigLabelTop.Font = Enum.Font.GothamBold
-        ConfigLabelTop.TextSize = 12
-        ConfigLabelTop.TextColor3 = Color3.fromRGB(240, 240, 255)
-        ConfigLabelTop.TextXAlignment = Enum.TextXAlignment.Center
-        ConfigLabelTop.ZIndex = 5
-        ConfigLabelTop.Parent = ColumnsFrame
-    end
-    local function LoadRageWeaponsContent()
-        ClearColumns()
-        CreateCheckbox(columns[1], "Knifebot", false)
-        CreateCheckbox(columns[1], "Zeusbot", false)
-        CreateCheckbox(columns[1], "Extended backtrack", false)
-        CreateCheckbox(columns[1], "Ping spike", false, "NONE")
-        CreateCheckbox(columns[2], "Auto revolver", false)
-        CreateCheckbox(columns[2], "Auto scope", false)
-        local ConfigLabel = Instance.new("TextLabel")
-        ConfigLabel.Size = UDim2.new(1, -30, 0, 20)
-        ConfigLabel.BackgroundTransparency = 1
-        ConfigLabel.Text = "Slot"
-        ConfigLabel.Font = Enum.Font.GothamBold
-        ConfigLabel.TextSize = 14
-        ConfigLabel.TextColor3 = Config.Theme.TextColor
-        ConfigLabel.TextXAlignment = Enum.TextXAlignment.Left
-        ConfigLabel.Parent = columns[3]
-        local SlotInputFrame = Instance.new("Frame")
-        SlotInputFrame.Size = UDim2.new(1, -28, 0, 26)
-        SlotInputFrame.BackgroundTransparency = 1
-        SlotInputFrame.Parent = columns[3]
-        local SlotInput = Instance.new("TextBox")
-        SlotInput.Size = UDim2.new(0.75, 0, 1, 0)
-        SlotInput.Position = UDim2.new(0, 0, 0, 0)
-        SlotInput.AnchorPoint = Vector2.new(0, 0)
-        SlotInput.BackgroundColor3 = Color3.fromRGB(40, 35, 60)
-        SlotInput.BorderSizePixel = 1
-        SlotInput.BorderColor3 = Color3.fromRGB(60, 50, 90)
-        SlotInput.Text = "Slot 1"
-        SlotInput.Font = Enum.Font.GothamBold
-        SlotInput.TextSize = 13
-        SlotInput.TextColor3 = Color3.fromRGB(255, 255, 255)
-        SlotInput.PlaceholderText = "Enter slot name..."
-        SlotInput.Parent = SlotInputFrame
-        local LoadButtonFrame = Instance.new("Frame")
-        LoadButtonFrame.Size = UDim2.new(1, -28, 0, 24)
-        LoadButtonFrame.BackgroundTransparency = 1
-        LoadButtonFrame.Parent = columns[3]
-        local LoadButton = Instance.new("TextButton")
-        LoadButton.Size = UDim2.new(0.75, 0, 1, 0)
-        LoadButton.Position = UDim2.new(0, 0, 0, 0)
-        LoadButton.AnchorPoint = Vector2.new(0, 0)
-        LoadButton.BackgroundColor3 = Config.Theme.Primary
-        LoadButton.BorderSizePixel = 1
-        LoadButton.BorderColor3 = Color3.fromRGB(200, 40, 120)
-        LoadButton.Text = "Load config"
-        LoadButton.Font = Enum.Font.GothamBold
-        LoadButton.TextSize = 13
-        LoadButton.TextColor3 = Color3.fromRGB(255, 255, 255)
-        LoadButton.Parent = LoadButtonFrame
-        LoadButton.MouseEnter:Connect(function()
-            TweenService:Create(LoadButton, TweenInfo.new(0.2), {BackgroundColor3 = Color3.fromRGB(255, 50, 167)}):Play()
-        end)
-        LoadButton.MouseLeave:Connect(function()
-            TweenService:Create(LoadButton, TweenInfo.new(0.2), {BackgroundColor3 = Config.Theme.Primary}):Play()
-        end)
-        local SaveButtonFrame = Instance.new("Frame")
-        SaveButtonFrame.Size = UDim2.new(1, -28, 0, 24)
-        SaveButtonFrame.BackgroundTransparency = 1
-        SaveButtonFrame.Parent = columns[3]
-        local SaveButton = Instance.new("TextButton")
-        SaveButton.Size = UDim2.new(0.75, 0, 1, 0)
-        SaveButton.Position = UDim2.new(0, 0, 0, 0)
-        SaveButton.AnchorPoint = Vector2.new(0, 0)
-        SaveButton.BackgroundColor3 = Config.Theme.Primary
-        SaveButton.BorderSizePixel = 1
-        SaveButton.BorderColor3 = Color3.fromRGB(200, 40, 120)
-        SaveButton.Text = "Save config"
-        SaveButton.Font = Enum.Font.GothamBold
-        SaveButton.TextSize = 13
-        SaveButton.TextColor3 = Color3.fromRGB(255, 255, 255)
-        SaveButton.Parent = SaveButtonFrame
-        SaveButton.MouseEnter:Connect(function()
-            TweenService:Create(SaveButton, TweenInfo.new(0.2), {BackgroundColor3 = Color3.fromRGB(255, 50, 167)}):Play()
-        end)
-        SaveButton.MouseLeave:Connect(function()
-            TweenService:Create(SaveButton, TweenInfo.new(0.2), {BackgroundColor3 = Config.Theme.Primary}):Play()
-        end)
-        CreateSectionLabels({"", "", "Config"})
-    end
-    local function LoadRageContent()
-        if CurrentSubTab == "AIMBOT" then
-            LoadRageAimbotContent()
-        elseif CurrentSubTab == "ANTI-AIM" then
-            LoadRageAntiAimContent()
-        elseif CurrentSubTab == "WEAPONS" then
-            LoadRageWeaponsContent()
-        else
-            LoadRageAimbotContent()
-        end
-    end
-    local function LoadVisualsPlayersContent()
-        ClearColumns()
-        CreateCheckbox(columns[1], "Enable ESP", false)
-        CreateCheckbox(columns[1], "Box ESP", false)
-        CreateCheckbox(columns[1], "Name ESP", false)
-        CreateCheckbox(columns[1], "Health ESP", false)
-        CreateCheckbox(columns[1], "Distance ESP", false)
-        CreateColorPicker(columns[1], "ESP Color", Color3.fromRGB(255, 50, 150))
-        CreateCheckbox(columns[2], "Enable Chams", false)
-        CreateCheckbox(columns[2], "Visible Only", false)
-        CreateColorPicker(columns[2], "Chams Color", Color3.fromRGB(138, 43, 226))
-        CreateSlider(columns[2], "Transparency", 0, 100, 80)
-        CreateSectionLabels({"ESP", "Chams", ""})
-    end
-    local function LoadVisualsWorldContent()
-        ClearColumns()
-        CreateCheckbox(columns[1], "Fullbright", false)
-        CreateCheckbox(columns[1], "No Fog", false)
-        CreateCheckbox(columns[1], "Skybox Changer", false)
-        CreateSlider(columns[1], "Ambient", 0, 100, 50)
-        CreateCheckbox(columns[2], "Remove Shadows", false)
-        CreateCheckbox(columns[2], "Force Crosshair", false)
-        CreateSlider(columns[2], "FOV Override", 60, 120, 90)
-        CreateSectionLabels({"World", "View", ""})
-    end
-    local function LoadVisualsEffectsContent()
-        ClearColumns()
-        CreateCheckbox(columns[1], "Bullet Tracers", false)
-        CreateColorPicker(columns[1], "Tracer Color", Color3.fromRGB(255, 20, 147))
-        CreateCheckbox(columns[1], "Hit Markers", false)
-        CreateCheckbox(columns[1], "Damage Indicator", false)
-        CreateCheckbox(columns[2], "Remove Flash", false)
-        CreateCheckbox(columns[2], "Remove Smoke", false)
-        CreateCheckbox(columns[2], "Remove Blood", false)
-        CreateSectionLabels({"Effects", "Removals", ""})
-    end
-    local function LoadMiscMovementContent()
-        ClearColumns()
-        CreateCheckbox(columns[1], "Bunny Hop", false, "SPACE")
-        CreateCheckbox(columns[1], "Auto Strafe", false)
-        CreateCheckbox(columns[1], "Edge Jump", false)
-        CreateSlider(columns[1], "Speed Multiplier", 1, 3, 1)
-        CreateCheckbox(columns[2], "Infinite Jump", false)
-        CreateCheckbox(columns[2], "No Clip", false, "V")
-        CreateSlider(columns[2], "Fly Speed", 1, 10, 5)
-        CreateSectionLabels({"Movement", "Exploits", ""})
-    end
-    local function LoadMiscSettingsContent()
-        ClearColumns()
-        CreateCheckbox(columns[1], "Anti AFK", false)
-        CreateCheckbox(columns[1], "Auto Accept", false)
-        CreateCheckbox(columns[1], "Clan Tag Spammer", false)
-        CreateCheckbox(columns[2], "Rank Revealer", false)
-        CreateCheckbox(columns[2], "Unlock All", false)
-        CreateDropdown(columns[2], "Menu Key", {"Delete", "Insert", "Home", "End"})
-        CreateMultiDropdown(columns[2], "Notifications", {"Kills", "Deaths", "Assists", "Damage"})
-        local TestNotifButtonFrame = Instance.new("Frame")
-        TestNotifButtonFrame.Size = UDim2.new(1, -28, 0, 24)
-        TestNotifButtonFrame.BackgroundTransparency = 1
-        TestNotifButtonFrame.Parent = columns[2]
-        local TestNotifButton = Instance.new("TextButton")
-        TestNotifButton.Size = UDim2.new(0.75, 0, 1, 0)
-        TestNotifButton.Position = UDim2.new(0, 0, 0, 0)
-        TestNotifButton.AnchorPoint = Vector2.new(0, 0)
-        TestNotifButton.BackgroundColor3 = Config.Theme.Primary
-        TestNotifButton.BorderSizePixel = 1
-        TestNotifButton.BorderColor3 = Color3.fromRGB(200, 40, 120)
-        TestNotifButton.Text = "Test notification"
-        TestNotifButton.Font = Enum.Font.GothamBold
-        TestNotifButton.TextSize = 13
-        TestNotifButton.TextColor3 = Color3.fromRGB(255, 255, 255)
-        TestNotifButton.Parent = TestNotifButtonFrame
-        TestNotifButton.MouseEnter:Connect(function()
-            TweenService:Create(TestNotifButton, TweenInfo.new(0.2), {BackgroundColor3 = Color3.fromRGB(255, 50, 167)}):Play()
-        end)
-        TestNotifButton.MouseLeave:Connect(function()
-            TweenService:Create(TestNotifButton, TweenInfo.new(0.2), {BackgroundColor3 = Config.Theme.Primary}):Play()
-        end)
-        TestNotifButton.MouseButton1Click:Connect(function()
-            CreateNotification("Test Notification", "This is a test notification message!", 4)
-        end)
-        CreateSectionLabels({"General", "Settings", ""})
-    end
-    local function LoadMiscOtherContent()
-        ClearColumns()
-        CreateCheckbox(columns[1], "Chat Spam", false)
-        CreateCheckbox(columns[1], "Name Stealer", false)
-        CreateCheckbox(columns[1], "Spectator List", false)
-        CreateCheckbox(columns[2], "Watermark", false)
-        CreateCheckbox(columns[2], "FPS Counter", false)
-        CreateCheckbox(columns[2], "Velocity Graph", false)
-        CreateSectionLabels({"Chat", "HUD", ""})
-    end
-    local function LoadInventoryItemsContent()
-        ClearColumns()
-        CreateCheckbox(columns[1], "Show Weapons", false)
-        CreateCheckbox(columns[1], "Show Armor", false)
-        CreateCheckbox(columns[1], "Show Grenades", false)
-        CreateCheckbox(columns[1], "Show Consumables", false)
-        CreateCheckbox(columns[2], "Auto Equip Best", false)
-        CreateCheckbox(columns[2], "Auto Sell Trash", false)
-        CreateSlider(columns[2], "Min Item Value", 0, 1000, 100)
-        CreateSectionLabels({"Display", "Auto", ""})
-    end
-    local function LoadInventorySkinsContent()
-        ClearColumns()
-        CreateCheckbox(columns[1], "Skin Changer", false)
-        CreateDropdown(columns[1], "Knife Skin", {"Doppler", "Fade", "Tiger Tooth", "Marble Fade"})
-        CreateDropdown(columns[1], "Glove Skin", {"Crimson Weave", "Fade", "Emerald Web"})
-        CreateMultiDropdown(columns[1], "Weapon Skins", {"AK-47", "M4A4", "AWP", "Desert Eagle"})
-        CreateCheckbox(columns[2], "Show Float Value", false)
-        CreateCheckbox(columns[2], "Show Wear", false)
-        CreateSlider(columns[2], "Wear Override", 0, 100, 0)
-        CreateSectionLabels({"Skins", "Options", ""})
-    end
-    local function LoadInventoryTradeContent()
-        ClearColumns()
-        CreateCheckbox(columns[1], "Trade Helper", false)
-        CreateCheckbox(columns[1], "Price Checker", false)
-        CreateCheckbox(columns[1], "Auto Accept Trades", false)
-        CreateCheckbox(columns[2], "Scam Detection", false)
-        CreateCheckbox(columns[2], "Trade Notifications", false)
-        CreateSectionLabels({"Trading", "Security", ""})
-    end
-    local function LoadLegitAimbotContent()
-        ClearColumns()
-        CreateCheckbox(columns[1], "Enable", false)
-        CreateSlider(columns[1], "Smoothness", 1, 100, 50)
-        CreateSlider(columns[1], "FOV", 10, 180, 60)
-        CreateCheckbox(columns[1], "Visible Check", false)
-        CreateDropdown(columns[1], "Target Bone", {"Head", "Torso", "Closest"})
-        CreateMultiDropdown(columns[1], "Hitboxes", {"Head", "Chest", "Stomach", "Arms", "Legs"})
-        CreateCheckbox(columns[2], "Team Check", false)
-        CreateCheckbox(columns[2], "Smoke Check", false)
-        CreateSlider(columns[2], "Max Distance", 100, 5000, 1000)
-        CreateSectionLabels({"Aimbot", "Checks", ""})
-    end
-    local function LoadLegitTriggerbotContent()
-        ClearColumns()
-        CreateCheckbox(columns[1], "Enable Triggerbot", false, "V")
-        CreateSlider(columns[1], "Delay (ms)", 0, 500, 50)
-        CreateCheckbox(columns[1], "Team Check", false)
-        CreateCheckbox(columns[1], "Head Only", false)
-        CreateCheckbox(columns[2], "Burst Mode", false)
-        CreateSlider(columns[2], "Burst Count", 1, 10, 3)
-        CreateSlider(columns[2], "Burst Delay", 0, 200, 50)
-        CreateSectionLabels({"Trigger", "Burst", ""})
-    end
-    local function LoadLegitRecoilContent()
-        ClearColumns()
-        CreateCheckbox(columns[1], "Reduce Recoil", false)
-        CreateSlider(columns[1], "Reduction %", 0, 100, 50)
-        CreateCheckbox(columns[1], "Remove Spread", false)
-        CreateSlider(columns[1], "Spread Reduction", 0, 100, 30)
-        CreateCheckbox(columns[2], "Standalone RCS", false)
-        CreateSlider(columns[2], "RCS Smoothness", 1, 100, 70)
-        CreateSectionLabels({"Recoil", "RCS", ""})
-    end
-    local function LoadVisualsContent()
-        if CurrentSubTab == "PLAYERS" then
-            LoadVisualsPlayersContent()
-        elseif CurrentSubTab == "WORLD" then
-            LoadVisualsWorldContent()
-        elseif CurrentSubTab == "EFFECTS" then
-            LoadVisualsEffectsContent()
-        else
-            LoadVisualsPlayersContent()
-        end
-    end
-    local function LoadMiscContent()
-        if CurrentSubTab == "MOVEMENT" then
-            LoadMiscMovementContent()
-        elseif CurrentSubTab == "SETTINGS" then
-            LoadMiscSettingsContent()
-        elseif CurrentSubTab == "OTHER" then
-            LoadMiscOtherContent()
-        else
-            LoadMiscMovementContent()
-        end
-    end
-    local function LoadInventoryContent()
-        if CurrentSubTab == "ITEMS" then
-            LoadInventoryItemsContent()
-        elseif CurrentSubTab == "SKINS" then
-            LoadInventorySkinsContent()
-        elseif CurrentSubTab == "TRADE" then
-            LoadInventoryTradeContent()
-        else
-            LoadInventoryItemsContent()
-        end
-    end
-    local function LoadLegitContent()
-        if CurrentSubTab == "AIMBOT" then
-            LoadLegitAimbotContent()
-        elseif CurrentSubTab == "TRIGGERBOT" then
-            LoadLegitTriggerbotContent()
-        elseif CurrentSubTab == "RECOIL" then
-            LoadLegitRecoilContent()
-        else
-            LoadLegitAimbotContent()
-        end
-    end
-    local tabs = {"RAGE", "VISUALS", "MISC", "INVENTORY", "LEGIT"}
-    local tabSubTabs = {
-        RAGE = {"AIMBOT", "ANTI-AIM", "WEAPONS"},
-        VISUALS = {"PLAYERS", "WORLD", "EFFECTS"},
-        MISC = {"MOVEMENT", "SETTINGS", "OTHER"},
-        INVENTORY = {"ITEMS", "SKINS", "TRADE"},
-        LEGIT = {"AIMBOT", "TRIGGERBOT", "RECOIL"}
-    }
-    local function SwitchSubTab(subTabName)
-        CurrentSubTab = subTabName
-        for name, data in pairs(AllSubTabs) do
-            local isActive = name == subTabName
-            data.Highlight.Visible = isActive
-            TweenService:Create(data.Button, TweenInfo.new(0.2), {
-                TextColor3 = isActive and Color3.fromRGB(255, 255, 255) or Config.Theme.TextColor
-            }):Play()
-        end
-        if CurrentTab == "RAGE" then
-            if subTabName == "AIMBOT" then
-                LoadRageAimbotContent()
-            elseif subTabName == "ANTI-AIM" then
-                LoadRageAntiAimContent()
-            elseif subTabName == "WEAPONS" then
-                LoadRageWeaponsContent()
-            end
-        elseif CurrentTab == "VISUALS" then
-            if subTabName == "PLAYERS" then
-                LoadVisualsPlayersContent()
-            elseif subTabName == "WORLD" then
-                LoadVisualsWorldContent()
-            elseif subTabName == "EFFECTS" then
-                LoadVisualsEffectsContent()
-            end
-        elseif CurrentTab == "MISC" then
-            if subTabName == "MOVEMENT" then
-                LoadMiscMovementContent()
-            elseif subTabName == "SETTINGS" then
-                LoadMiscSettingsContent()
-            elseif subTabName == "OTHER" then
-                LoadMiscOtherContent()
-            end
-        elseif CurrentTab == "INVENTORY" then
-            if subTabName == "ITEMS" then
-                LoadInventoryItemsContent()
-            elseif subTabName == "SKINS" then
-                LoadInventorySkinsContent()
-            elseif subTabName == "TRADE" then
-                LoadInventoryTradeContent()
-            end
-        elseif CurrentTab == "LEGIT" then
-            if subTabName == "AIMBOT" then
-                LoadLegitAimbotContent()
-            elseif subTabName == "TRIGGERBOT" then
-                LoadLegitTriggerbotContent()
-            elseif subTabName == "RECOIL" then
-                LoadLegitRecoilContent()
-            end
-        end
-    end
-    local function UpdateSubTabs()
-        for _, child in ipairs(SubTabContainer:GetChildren()) do
-            if child:IsA("TextButton") then
-                child:Destroy()
-            end
-        end
-        AllSubTabs = {}
-        local subTabs = tabSubTabs[CurrentTab] or {}
-        for i, subTabName in ipairs(subTabs) do
-            CreateSubTab(SubTabContainer, subTabName, i == 1, SwitchSubTab)
-        end
-        if #subTabs > 0 then
-            CurrentSubTab = subTabs[1]
-        end
-    end
-    local function SwitchTab(tabName)
-        CurrentTab = tabName
-        for name, data in pairs(AllTabs) do
-            local isActive = name == tabName
-            data.Underline.Visible = isActive
-            TweenService:Create(data.Button, TweenInfo.new(0.2), {
-                TextColor3 = isActive and Color3.fromRGB(255, 255, 255) or Config.Theme.TextColor
-            }):Play()
-        end
-        UpdateSubTabs()
-        if tabName == "RAGE" then
-            LoadRageContent()
-        elseif tabName == "VISUALS" then
-            LoadVisualsContent()
-        elseif tabName == "MISC" then
-            LoadMiscContent()
-        elseif tabName == "INVENTORY" then
-            LoadInventoryContent()
-        elseif tabName == "LEGIT" then
-            LoadLegitContent()
-        end
-    end
-    for i, tabName in ipairs(tabs) do
-        CreateTab(TabContainer, tabName, i == 1, SwitchTab)
-    end
-    UpdateSubTabs()
-    LoadRageContent()
-    MakeDraggable(MainFrame)
-    MainFrame.Visible = false
-    MainFrame.Size = UDim2.new(0, 0, 0, 0)
-    MainFrame.Position = UDim2.new(0.5, 0, 0.5, 0)
-    local isVisible = true
-    local savedPosition = UDim2.new(0.5, -405, 0.5, -300)
-    UserInputService.InputBegan:Connect(function(input, gameProcessed)
-        if not gameProcessed and input.KeyCode == Config.ToggleKey then
-            isVisible = not isVisible
-            if isVisible then
-                MainFrame.Visible = true
-                local showTween = TweenService:Create(MainFrame, TweenInfo.new(0.3, Enum.EasingStyle.Back, Enum.EasingDirection.Out), {
-                    Size = UDim2.new(0, 810, 0, 600),
-                    Position = savedPosition
-                })
-                showTween:Play()
-            else
-                savedPosition = MainFrame.Position
-                local hideTween = TweenService:Create(MainFrame, TweenInfo.new(0.3, Enum.EasingStyle.Back, Enum.EasingDirection.In), {
-                    Size = UDim2.new(0, 0, 0, 0),
-                    Position = UDim2.new(savedPosition.X.Scale, savedPosition.X.Offset + 405, savedPosition.Y.Scale, savedPosition.Y.Offset + 300)
-                })
-                hideTween:Play()
-                hideTween.Completed:Connect(function()
-                    MainFrame.Visible = false
-                end)
-            end
-        end
-    end)
+function FatalityUI:New()
+    ScreenGui, MainFrame = CreateMainUI()
+    local TopBar, tabContainer = CreateTopBar(MainFrame)
+    TabContainer = tabContainer
+    local ContentFrame, subTabContainer = CreateContentContainer(MainFrame)
+    SubTabContainer = subTabContainer
+    ColumnsFrame, Columns = CreateColumnContainer(ContentFrame)
+    
     if syn and syn.protect_gui then
         syn.protect_gui(ScreenGui)
     end
     ScreenGui.Parent = CoreGui
-    CreateLoadingScreen(function()
-        MainFrame.Visible = true
-        local openTween = TweenService:Create(MainFrame, TweenInfo.new(0.5, Enum.EasingStyle.Back, Enum.EasingDirection.Out), {
-            Size = UDim2.new(0, 810, 0, 600),
-            Position = UDim2.new(0.5, -405, 0.5, -300)
-        })
-        openTween:Play()
-        openTween.Completed:Connect(function()
-            savedPosition = MainFrame.Position
-            CreateNotification("FATALITY", "Menu loaded successfully! Press Delete to open/hide", 4)
-        end)
-    end)
-    return ScreenGui
+    return {
+        ScreenGui = ScreenGui,
+        MainFrame = MainFrame,
+        TabContainer = TabContainer,
+        SubTabContainer = SubTabContainer,
+        ColumnsFrame = ColumnsFrame,
+        Columns = Columns
+    }
+end
+FatalityUI.CreateTab = CreateTab
+FatalityUI.CreateSubTab = CreateSubTab
+FatalityUI.CreateCheckbox = CreateCheckbox
+FatalityUI.CreateSlider = CreateSlider
+FatalityUI.CreateDropdown = CreateDropdown
+FatalityUI.CreateMultiDropdown = CreateMultiDropdown
+FatalityUI.CreateColorPicker = CreateColorPicker
+FatalityUI.CreateSectionHeader = CreateSectionHeader
+FatalityUI.CreateNotification = CreateNotification
+FatalityUI.CreateLoadingScreen = CreateLoadingScreen
+FatalityUI.MakeDraggable = MakeDraggable
+FatalityUI.SetCurrentTab = function(tab) CurrentTab = tab end
+FatalityUI.SetCurrentSubTab = function(subtab) CurrentSubTab = subtab end
+FatalityUI.GetCurrentTab = function() return CurrentTab end
+FatalityUI.GetCurrentSubTab = function() return CurrentSubTab end
+FatalityUI.GetAllTabs = function() return AllTabs end
+FatalityUI.GetAllSubTabs = function() return AllSubTabs end
+FatalityUI.GetColumns = function() return Columns end
+FatalityUI.GetColumnsFrame = function() return ColumnsFrame end
+FatalityUI.ClearColumns = function()
+    for _, column in ipairs(Columns) do
+        column.Visible = true
+        for _, child in ipairs(column:GetChildren()) do
+            if not child:IsA("UIListLayout") and not child:IsA("UIPadding") and not child:IsA("UICorner") then
+                child:Destroy()
+            end
+        end
+    end
+    for _, child in ipairs(ColumnsFrame:GetChildren()) do
+        if child:IsA("TextLabel") then
+            child:Destroy()
+        elseif child:IsA("ScrollingFrame") and child.Name ~= "Column1" and child.Name ~= "Column2" and child.Name ~= "Column3" then
+            child:Destroy()
+        end
+    end
+end
+FatalityUI.CreateSectionLabels = function(labels)
+    for i, labelText in ipairs(labels) do
+        if labelText and labelText ~= "" then
+            local Label = Instance.new("TextLabel")
+            Label.Size = UDim2.new(0, 70, 0, 16)
+            Label.Position = UDim2.new(
+                Columns[i].Position.X.Scale, 
+                Columns[i].Position.X.Offset + 10, 
+                Columns[i].Position.Y.Scale, 
+                Columns[i].Position.Y.Offset - 8
+            )
+            Label.BackgroundTransparency = 1
+            Label.BorderSizePixel = 0
+            Label.Text = labelText
+            Label.Font = Enum.Font.GothamBold
+            Label.TextSize = 12
+            Label.TextColor3 = Color3.fromRGB(240, 240, 255)
+            Label.TextXAlignment = Enum.TextXAlignment.Center
+            Label.ZIndex = 5
+            Label.Parent = ColumnsFrame
+        end
+    end
 end
 return FatalityUI
